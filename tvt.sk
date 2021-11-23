@@ -1,0 +1,60 @@
+# Team vs Team Minigame
+
+# General /teamvsteam command
+command /teamvsteam <text> [<text>] [<text>]:
+    aliases: tvt
+    trigger:
+        arg-1 is "create":
+            if game "teamvsteam" exists:
+                message "&cThe event has already been created!"
+                stop
+            else:
+                create game "teamvsteam"
+                set {_game} to last game created
+                # world
+                set {teamvsteam::world} to world("TvT1")
+                # lobby
+                set lobby of {_game} to {teamvsteam::lobby}
+                # team blue
+                create team "blue" for {_game}
+                console command "/team blue in teamvsteam set minimum player 1"
+                console command "/team blue in teamvsteam set maximum player 30"
+                set spawn of team "blue" for {_game} to {teamvsteam::spawns::blue}
+                # team red
+                create team "red" for {_game}
+                console command "/team red in teamvsteam set minimum player 1"
+                console command "/team red in teamvsteam set maximum player 30"
+                set spawn of team "red" for {_game} to {teamvsteam::spawns::red}
+                message "&6The event has been created!"
+        arg-1 is "start":
+            if game "teamvsteam" exists:
+                start game "teamvsteam"
+                # broadcast
+                broadcast "&6Team vs Team event started!"
+            else:
+                message "&cThe game hasn't been created yet!"
+        arg-1 is "stop":
+            if game "teamvsteam" exists:
+                stop game "teamvsteam"
+                delete game "teamvsteam"
+                message "&aThe game has been stopped!"
+            else:
+                message "&cThe game hasn't been created yet!"
+        arg-1 is "set":
+            arg-2 is "lobby":
+                set {teamvsteam::lobby} to location of player
+                message "&aLobby position set to &b%{teamvsteam::lobby}%"
+            arg-2 is "spawn":
+                arg-3 is "blue":
+                    set {teamvsteam::spawns::blue} to location of player
+                    message "&aBlue spawn position set to &b%{teamvsteam::spawns::blue}%"
+                arg-3 is "red":
+                    set {teamvsteam::spawns::red} to location of player
+                    message "&aRed spawn position set to &b%{teamvsteam::spawns::red}%"
+        arg-1 is "join":
+            arg-2 is "blue":
+                add player to team "blue" for game "teamvsteam"
+                message "&aYou have joined team &9Blue"
+            arg-2 is "red":
+                add player to team "red" for game "teamvsteam"
+                message "&aYou have joined team &4Red"
