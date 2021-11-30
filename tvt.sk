@@ -58,3 +58,37 @@ command /teamvsteam <text> [<text>] [<text>]:
             arg-2 is "red":
                 add player to team "red" for game "teamvsteam"
                 message "&aYou have joined team &4Red"
+
+# Disable friendly fire
+on damage:
+    if game "teamvsteam" exists:
+        attacker is a player
+        victim is a player
+        game of attacker is game "teamvsteam"
+        if "%team of attacker%" is "%team of victim%":
+            cancel event
+            stop
+
+# Respawn the player at his team's spawn
+on respawn:
+    if game "teamvsteam" exists:
+        game of player is game "teamvsteam"
+        teleport player to spawn of the team of player
+
+# Scoring system
+on death of player:
+    if game "teamvsteam" exists:
+        game of player is game "teamvsteam"
+        # force respawn
+        wait 1 tick
+        force event-player to respawn
+        # team points
+        set {_blue} to team "blue" from game "teamvsteam"
+        set {_red} to team "red" from game "teamvsteam"
+        if attacker is a player:
+            if "%team of attacker%" is "blue":
+                add 1 point to team "blue" from game "teamvsteam"
+                broadcast "Team blue points: %point of {_blue}%"
+            else if "%team of attacker%" is "red":
+                add 1 point to team "red" from game "teamvsteam"
+                broadcast "Team red points: %point of {_red}%"
