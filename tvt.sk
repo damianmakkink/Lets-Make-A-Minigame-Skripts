@@ -1,5 +1,8 @@
 # Team vs Team Minigame
 
+options:
+    maxPoints: 3
+
 # General /teamvsteam command
 command /teamvsteam <text> [<text>] [<text>]:
     aliases: tvt
@@ -92,3 +95,15 @@ on death of player:
             else if "%team of attacker%" is "red":
                 add 1 point to team "red" from game "teamvsteam"
                 broadcast "Team red points: %point of {_red}%"
+
+on team score point:
+    event-game is game "teamvsteam"
+    if raw points of event-team = {@maxPoints}:
+        broadcast "&6%event-team% &bhas won Team vs Team!"
+        loop all players in world {teamvsteam::world}:
+            if "%team of loop-player%" is "%event-team%":
+                give 5 diamonds to loop-player
+        wait 1 tick
+        # end the game
+        stop game "teamvsteam"
+        delete game "teamvsteam"
